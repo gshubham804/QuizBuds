@@ -56,7 +56,7 @@ const User = () => {
             rel="noopener noreferrer"
             className="text-blue-500 underline hover:text-blue-700 mt-1"
           >
-            http://localhost:5173/questionform/{groupId}
+            https://quiz-buds-psi.vercel.app/questionform/{groupId}
           </a>
         </div>
       )}
