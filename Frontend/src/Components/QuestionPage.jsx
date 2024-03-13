@@ -17,7 +17,6 @@ const QuestionPage = () => {
     const fetchData = async () => {
       try {
         const questionsArray = await getQuestion(groupId, userId);
-        console.log(questionsArray);
         setQuestions(questionsArray);
       } catch (error) {
         console.error("Error fetching questions:", error);
@@ -51,23 +50,28 @@ const QuestionPage = () => {
     <>
       <div className="container mx-auto mt-4 p-4">
         <p className="text-lg font-medium my-2">
-          {`Q.${currentQuestion + 1}`} &nbsp;
-          {questions[currentQuestion].question}
+          {questions.length > 0 && (
+            <p className="text-lg font-medium my-2">
+              {`Q.${currentQuestion + 1}`} &nbsp;{" "}
+              {questions[currentQuestion].question}
+            </p>
+          )}
         </p>
         <ul className="list-decimal pl-6">
-          {questions[currentQuestion].options.map((opt, idx) => (
-            <li
-              key={idx}
-              className={`${
-                selectedOption === opt
-                  ? "text-blue-700 font-semibold text-lg"
-                  : "text-gray-950"
-              }`}
-              onClick={() => handleOptionSelect(opt)}
-            >
-              {opt}
-            </li>
-          ))}
+          {questions.length > 0 &&
+            questions[currentQuestion].options.map((opt, idx) => (
+              <li
+                key={idx}
+                className={`${
+                  selectedOption === opt
+                    ? "text-blue-700 font-semibold text-lg"
+                    : "text-gray-950"
+                }`}
+                onClick={() => handleOptionSelect(opt)}
+              >
+                {opt}
+              </li>
+            ))}
         </ul>
         <button
           className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
