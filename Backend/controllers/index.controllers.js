@@ -41,7 +41,7 @@ export const saveQuestion = async (req, res, next) => {
   try {
     // before save the question check whether groupId is present or not
 
-    const { groupId, userId, questionText, answer } = req.body;
+    const { groupId, userId, questionArray } = req.body;
     // Check if groupId is present and valid
     if (!groupId) {
       return res.status(400).json({ message: "groupId is required." });
@@ -55,7 +55,7 @@ export const saveQuestion = async (req, res, next) => {
     }
 
     // Assuming you have a Question model with appropriate fields
-    const question = new Question({ groupId, userId, questionText, answer });
+    const question = new Question({ groupId, userId, questionArray });
     await question.save();
 
     res.status(201).json(question);
@@ -74,25 +74,33 @@ export const getQuestion = async (req, res, next) => {
 
     // Check if groupId and userId exist
     if (!groupId || !userId) {
-      return res
-        .status(400)
-        .json({
-          message: "groupId and userId are required in the URL parameters.",
-        });
+      return res.status(400).json({
+        message: "groupId and userId are required in the URL parameters.",
+      });
     }
 
-     // Check if groupId and userId exist in the database
-     const groupExists = await Question.exists({ groupId });
-     const userExists = await Question.exists({ userId });
- 
-     if (!groupExists || !userExists) {
-       return res.status(404).json({ message: "Group or user not found." });
-     }
+    // Check if groupId and userId exist in the database
+    const groupExists = await Question.exists({ groupId });
+    const userExists = await Question.exists({ userId });
+
+    if (!groupExists || !userExists) {
+      return res.status(404).json({ message: "Group or user not found." });
+    }
 
     // return the only those questions who belong to that group and not related the this userID
     const questions = await Question.find({ groupId, userId: { $ne: userId } });
+    console.log(questions);
 
-    res.status(200).json(questions);
+    // make a array which contain {question, options, answer}
+    const formattedQuizData = questions.map(group => {
+      return group.questionArray.map(question => ({
+        question: question.question,
+        options: question.options,
+        answer: question.answer
+      }));
+    }).flat();
+
+    res.status(200).json(formattedQuizData);
   } catch (error) {
     console.log(error);
     res.status(500).send("Server error");
