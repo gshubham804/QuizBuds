@@ -51,7 +51,7 @@ const User = () => {
             Link generated!
           </p>
           <a
-            href={`http://localhost:5173/questionform/${groupId}`}
+            href={`https://quiz-buds-psi.vercel.app/questionform/${groupId}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 underline hover:text-blue-700 mt-1"
